@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>提交成功 - IT运维报修系统</title>
+    <meta http-equiv="refresh" content="5;url=/">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!--[if IE]>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ie-styles.css') }}">
+    <![endif]-->
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div class="container">
+        <div class="success-content">
+            <h1>提交成功！</h1>
+            
+            <div class="success-icon">
+                <div class="icon-circle">
+                    <span class="checkmark">✓</span>
+                </div>
+            </div>
+
+            <div class="success-message">
+                <p>您的报修工单已成功提交，我们将尽快处理您的请求。</p>
+                <p class="countdown-text">
+                    <span id="countdown">5</span> 秒后将自动返回首页
+                </p>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+            </div>
+
+            <a href="/" class="back-home-btn">立即返回首页</a>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        // 倒计时功能
+        let countdown = 5;
+        const countdownEl = document.getElementById('countdown');
+        const progressFill = document.getElementById('progress-fill');
+
+        function updateCountdown() {
+            countdown--;
+            countdownEl.textContent = countdown;
+            progressFill.style.width = `${(5 - countdown) * 20}%`;
+
+            if (countdown <= 0) {
+                clearInterval(timer);
+            }
+        }
+
+        const timer = setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>

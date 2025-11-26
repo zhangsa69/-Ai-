@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>编辑故障类别</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!--[if IE]>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ie-styles.css') }}">
+    <![endif]-->
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div class="container">
+        <h1>编辑故障类别</h1>
+
+        <!-- 显示提示信息 -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- 编辑表单 -->
+        <form action="{{ url_for('manage_fault_categories') }}" method="post" class="add-form">
+            <input type="hidden" name="category_id" value="{{ category.id }}">
+            <div class="form-group full-width">
+                <label for="name" class="required">故障类别名称：</label>
+                <input type="text" id="name" name="name" value="{{ category.name }}" required>
+            </div>
+            <div class="form-group full-width">
+                <label for="contact_email" class="required">联系人邮箱：</label>
+                <input type="text" id="contact_email" name="contact_email" value="{{ category.contact_email }}" required>
+            </div>
+            <button type="submit" name="action" value="update" class="submit-btn">保存更改</button>
+        </form>
+
+        <!-- 返回按钮 -->
+        <a href="{{ url_for('manage_fault_categories') }}" class="back-btn">返回管理页面</a>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

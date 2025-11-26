@@ -1,0 +1,275 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>IT运维报修系统</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!--[if IE]>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ie-styles.css') }}">
+    <![endif]-->
+    <style>
+        .desc-upload-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            align-items: stretch;
+            margin-bottom: 18px;
+        }
+        .desc-box, .upload-box-outer {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .desc-box label,
+        .upload-box-outer label {
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #00b4ff;
+            font-size: 1rem;
+        }
+        .desc-box textarea {
+            height: 180px;
+            min-height: 120px;
+            resize: vertical;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .upload-box {
+            background: rgba(0,180,255,0.06);
+            border: 2.5px dashed #00b4ff;
+            border-radius: 12px;
+            min-width: 0;
+            min-height: 180px;
+            height: 180px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 12px #00b4ff22;
+            position: relative;
+            padding: 0;
+        }
+        .upload-box input[type=file] {
+            display: none;
+        }
+        .upload-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            width: 100%;
+        }
+        .upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 54px;
+            height: 54px;
+            background: linear-gradient(135deg,#00b4ff,#0066ff);
+            border-radius: 12px;
+            cursor: pointer;
+            margin: 0 auto;
+            box-shadow: 0 0 12px #00b4ff44;
+            position: relative;
+            transition: box-shadow 0.2s;
+        }
+        .upload-label:hover {
+            box-shadow: 0 0 24px #00b4ff99;
+        }
+        .upload-label .plus {
+            display: block;
+            width: 26px;
+            height: 26px;
+            position: relative;
+        }
+        .upload-label .plus:before,
+        .upload-label .plus:after {
+            content: '';
+            position: absolute;
+            background: #fff;
+            border-radius: 2px;
+        }
+        .upload-label .plus:before {
+            left: 12px;
+            top: 4px;
+            width: 2px;
+            height: 18px;
+        }
+        .upload-label .plus:after {
+            top: 12px;
+            left: 4px;
+            width: 18px;
+            height: 2px;
+        }
+        .preview-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+            justify-content: center;
+        }
+        .preview-list img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1.5px solid #00b4ff;
+            box-shadow: 0 0 6px #00b4ff33;
+        }
+        .form-group {
+            width: 100%;
+        }
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        /* 移动设备响应式样式 - 提高优先级 */
+        @media (max-width: 900px) {
+            .desc-upload-row { 
+                grid-template-columns: 1fr !important; 
+                gap: 10px !important; 
+            }
+            .upload-box-outer, .desc-box { 
+                max-width: 100% !important; 
+                min-width: 0 !important; 
+            }
+            .upload-box { 
+                min-height: 120px !important; 
+                height: 120px !important; 
+            }
+            .button-container {
+                flex-direction: column !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            form {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .form-group.full-width,
+            .button-container,
+            .ai-assistant-note {
+                grid-column: span 1 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div class="container">
+        <div class="title-bar">
+            <h1>IT运维报修系统</h1>
+            <!-- 已解决事件计数器 -->
+            <div class="resolved-counter">
+                <span class="counter-icon">✅</span>
+                <span class="counter-text">已解决</span>
+                <span class="counter-number" id="resolvedCount">605</span>
+                <span class="counter-unit">个事件</span>
+            </div>
+        </div>
+        <form action="/submit" method="post" enctype="multipart/form-data">
+            <div class="form-group full-width desc-upload-row">
+                <div class="desc-box">
+                    <label for="description" class="required">故障描述：</label>
+                    <textarea id="description" name="description" required placeholder="请注明设备种类、操作过程、故障现象以及系统提示的错误等详细信息！有助于更快解决问题！"></textarea>
+                </div>
+                <div class="upload-box-outer">
+                    <label for="photos" class="required">上传照片：</label>
+                    <div class="upload-box">
+                        <div class="upload-center">
+                            <label class="upload-label" for="photos">
+                                <span class="plus"></span>
+                            </label>
+                            <input type="file" id="photos" name="photos" accept="image/*" multiple>
+                        </div>
+                        <div class="preview-list" id="preview-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="name" class="required">姓名：</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone" class="required">电话：</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+
+            <div class="form-group">
+                <label for="department" class="required">部门：</label>
+                <input type="text" id="department" name="department" required>
+            </div>
+
+            <div class="form-group">
+                <label for="category" class="required">故障类别：</label>
+                <select id="category" name="category" required>
+                    {% for category in categories %}
+                        <option value="{{ category.name }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="button-container">
+                <button type="submit" class="submit-btn">提交</button>
+                <button type="button" class="ai-btn" onclick="window.open('/try_ai', '_blank')">点击询问京车小智</button>
+            </div>
+        </form>
+
+        <div class="ai-assistant-note">
+            欢迎使用京车AI运维助手，无需等待，即刻解决！
+        </div>
+
+        <!-- 可视化：最近工单事件（首页） -->
+        <div class="events-panel">
+            <h2>最近工单</h2>
+            <div class="events-list">
+                {% if recent_events and recent_events|length > 0 %}
+                    {% for ev in recent_events %}
+                    <div class="event-card">
+                        <div class="event-main">
+                            <div class="event-line"><span class="label">描述</span><span class="value">{{ ev.description }}</span></div>
+                            <div class="event-line"><span class="label">姓名</span><span class="value">{{ ev.name }}</span></div>
+                            <div class="event-line"><span class="label">部门</span><span class="value">{{ ev.department }}</span></div>
+                            <div class="event-line"><span class="label">类别</span><span class="value">{{ ev.category }}</span></div>
+                        </div>
+                        <div class="event-status {{ 'resolved' if ev.status == '已解决' else 'pending' }}">{{ ev.status or '待解决' }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="loading-message">暂无工单数据</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+    // 图片预览
+    const input = document.getElementById('photos');
+    const preview = document.getElementById('preview-list');
+    input.addEventListener('change', function() {
+        preview.innerHTML = '';
+        for (const file of input.files) {
+            if (!file.type.startsWith('image/')) continue;
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                preview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    </script>
+</body>
+</html>

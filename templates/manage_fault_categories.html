@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>管理故障类别</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!--[if IE]>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ie-styles.css') }}">
+    <![endif]-->
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <!-- 页面标题 -->
+    <div class="page-header">
+        <h1>河北京车运维管理系统</h1>
+        <!-- 显示提示信息 -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- 三容器并列布局 -->
+    <div class="triple-container-layout">
+        <!-- 左侧容器：最近工单 -->
+        <div class="container-left">
+            <h2>最近工单</h2>
+            <div class="events-list">
+                {% if recent_events and recent_events|length > 0 %}
+                    {% for ev in recent_events %}
+                    <div class="event-card">
+                        <div class="event-main">
+                            <div class="event-line"><span class="label">描述</span><span class="value">{{ ev.description }}</span></div>
+                            <div class="event-line"><span class="label">姓名</span><span class="value">{{ ev.name }}</span></div>
+                            <div class="event-line"><span class="label">部门</span><span class="value">{{ ev.department }}</span></div>
+                            <div class="event-line"><span class="label">类别</span><span class="value">{{ ev.category }}</span></div>
+                            <div class="event-status {{ 'resolved' if ev.status == '已解决' else 'pending' }}">{{ ev.status or '待解决' }}</div>
+                        </div>
+                        <div class="event-actions">
+                            {% if ev.status != '已解决' %}
+                            <form action="{{ url_for('resolve_ticket') }}" method="post">
+                                <input type="hidden" name="timestamp" value="{{ ev.timestamp_raw or ev.timestamp }}">
+                                <input type="hidden" name="name" value="{{ ev.name }}">
+                                <input type="hidden" name="description" value="{{ ev.description }}">
+                                <button type="submit" class="resolve-btn">已解决</button>
+                            </form>
+                            {% else %}
+                            <div class="resolved-tag">✓ 已解决</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="loading-message">暂无工单数据</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 中间容器：故障类别管理 -->
+        <div class="container-middle">
+            <h2>管理故障类别</h2>
+            
+            <!-- 添加新故障类别 -->
+            <form action="{{ url_for('manage_fault_categories') }}" method="post" class="add-form">
+                <h3>添加新故障类别</h3>
+                <div class="form-group full-width">
+                    <label for="name" class="required">故障类别名称：</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group full-width">
+                    <label for="contact_email" class="required">联系人邮箱：</label>
+                    <input type="text" id="contact_email" name="contact_email" required>
+                </div>
+                <button type="submit" name="action" value="add" class="submit-btn">添加</button>
+            </form>
+
+            <!-- 故障类别列表 -->
+            <h3>现有故障类别</h3>
+            <table class="fault-table">
+                <thead>
+                    <tr>
+                        <th>故障类别</th>
+                        <th>联系人邮箱</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                        <tr>
+                            <td>{{ category.name }}</td>
+                            <td>{{ category.contact_email }}</td>
+                            <td>
+                                <!-- 修改表单 -->
+                                <form action="{{ url_for('manage_fault_categories') }}" method="post" class="inline-form">
+                                    <input type="hidden" name="category_id" value="{{ category.id }}">
+                                    <button type="submit" name="action" value="edit" class="edit-btn">修改</button>
+                                </form>
+                                <!-- 删除表单 -->
+                                <form action="{{ url_for('manage_fault_categories') }}" method="post" class="inline-form" onsubmit="return confirm('确定要删除 {{ category.name }} 吗？');">
+                                    <input type="hidden" name="category_id" value="{{ category.id }}">
+                                    <button type="submit" name="action" value="delete" class="delete-btn">删除</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- 右侧容器：运维工具 -->
+        <div class="container-right">
+            <h2>运维工具</h2>
+            <div class="tools-grid">
+                <a href="http://10.120.192.106:5000/" target="_blank" class="tool-item">
+                    <div class="tool-icon">🔍</div>
+                    <div class="tool-name">设备快查</div>
+                </a>
+                <a href="http://10.120.192.24" target="_blank" class="tool-item">
+                    <div class="tool-icon">☁️</div>
+                    <div class="tool-name">企业云盘</div>
+                </a>
+                <a href="https://10.120.192.105:28443/" target="_blank" class="tool-item">
+                    <div class="tool-icon">🔒</div>
+                    <div class="tool-name">安全系统</div>
+                </a>
+                <a href="http://10.120.65.148/datasets" target="_blank" class="tool-item">
+                    <div class="tool-icon">📚</div>
+                    <div class="tool-name">知识库管理</div>
+                </a>
+                <a href="https://10.120.196.200:8443/OPMUI/jsp/secospace/login.jsp#/" target="_blank" class="tool-item">
+                    <div class="tool-icon">🌐</div>
+                    <div class="tool-name">上网行为管理</div>
+                </a>
+                <a href="https://mail.rtte.cn:8089/webadmin/" target="_blank" class="tool-item">
+                    <div class="tool-icon">📧</div>
+                    <div class="tool-name">邮箱管理</div>
+                </a>
+                <a href="https://10.120.252.10:8080/" target="_blank" class="tool-item">
+                    <div class="tool-icon">🔐</div>
+                    <div class="tool-name">VPN管理</div>
+                </a>
+                <a href="https://admin.microsoft.com/adminportal/home#/subscriptions/vlnew" target="_blank" class="tool-item">
+                    <div class="tool-icon">🔑</div>
+                    <div class="tool-name">软件授权管理</div>
+                </a>
+                <a href="http://10.120.192.100:8080/zh-cn/" target="_blank" class="tool-item">
+                    <div class="tool-icon">🖨️</div>
+                    <div class="tool-name">打印系统管理</div>
+                </a>
+                <a href="http://10.120.65.240/rms/u/login.shtml;JSESSIONID=2a8fad10-5618-4c55-b573-42d73940ed5a" target="_blank" class="tool-item">
+                    <div class="tool-icon">👥</div>
+                    <div class="tool-name">访客管理</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+     window.difyChatbotConfig = {
+      token: 'OCeSxdJSuLh6inAK',
+      baseUrl: 'http://10.120.65.148',
+      systemVariables: {
+        // user_id: 'YOU CAN DEFINE USER ID HERE',
+        // conversation_id: 'YOU CAN DEFINE CONVERSATION ID HERE, IT MUST BE A VALID UUID',
+      },
+     }
+    </script>
+    <script
+     src="http://10.120.65.148/embed.min.js"
+     id="OCeSxdJSuLh6inAK"
+     defer>
+    </script>
+    <style>
+      #dify-chatbot-bubble-button {
+        background-color: #1C64F2 !important;
+        position: fixed !important;
+        z-index: 9999 !important;
+      }
+      #dify-chatbot-bubble-window {
+        width: 24rem !important;
+        height: 40rem !important;
+        position: fixed !important;
+        z-index: 9998 !important;
+        bottom: 100px !important;
+        right: 20px !important;
+      }
+      /* 确保对话窗口跟随按钮位置 */
+      .dify-chatbot-window {
+        position: fixed !important;
+        z-index: 9998 !important;
+      }
+      /* 调整对话窗口的定位，使其始终在按钮上方 */
+      [data-dify-window] {
+        position: fixed !important;
+        bottom: 100px !important;
+        right: 20px !important;
+        z-index: 9998 !important;
+      }
+    </style>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

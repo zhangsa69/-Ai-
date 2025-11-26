@@ -1,0 +1,49 @@
+/* IE专用样式表 - 针对IE10及以上版本 */
+
+/* 修复IE中Flex布局问题 */
+form {
+    display: -ms-flexbox;
+    -ms-flex-direction: column;
+}
+
+/* 修复IE中按钮布局问题 */
+button {
+    -ms-flex: 0 0 auto;
+    width: 100%;
+}
+
+/* 修复IE中背景模糊效果 */
+.container {
+    background-color: rgba(0, 0, 0, 0.85); /* 替代模糊效果 */
+    backdrop-filter: none; /* 移除IE不支持的属性 */
+}
+
+/* 修复IE中网格布局回退方案 */
+.form-group {
+    -ms-flex: 1 0 auto;
+    margin-bottom: 15px;
+}
+
+/* 修复IE中全宽元素 */
+.form-group.full-width {
+    -ms-flex: 0 0 100%;
+    width: 100%;
+}
+
+/* 修复IE中滚动条样式 */
+.container {
+    scrollbar-base-color: #0a0a1a;
+    scrollbar-face-color: #00b4ff;
+    scrollbar-track-color: #0a0a1a;
+    scrollbar-arrow-color: #00b4ff;
+    scrollbar-3dlight-color: #0a0a1a;
+    scrollbar-highlight-color: #0a0a1a;
+    scrollbar-shadow-color: #00b4ff;
+}
+
+/* 修复IE中transform问题 */
+.submit-btn:hover, .ai-btn:hover {
+    transform: none;
+    position: relative;
+    top: -2px;
+}
