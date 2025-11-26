@@ -30,7 +30,12 @@
     <div class="triple-container-layout">
         <!-- 左侧容器：最近工单 -->
         <div class="container-left">
-            <h2>最近工单</h2>
+            <div class="section-header">
+                <h2>最近工单</h2>
+                <a href="{{ url_for('export_excel') }}" class="export-btn">
+                    <span class="icon">📥</span> 导出Excel
+                </a>
+            </div>
             <div class="events-list">
                 {% if recent_events and recent_events|length > 0 %}
                     {% for ev in recent_events %}
@@ -44,14 +49,16 @@
                         </div>
                         <div class="event-actions">
                             {% if ev.status != '已解决' %}
-                            <form action="{{ url_for('resolve_ticket') }}" method="post">
+                            <form action="{{ url_for('resolve_ticket') }}" method="post" class="resolve-form">
                                 <input type="hidden" name="timestamp" value="{{ ev.timestamp_raw or ev.timestamp }}">
                                 <input type="hidden" name="name" value="{{ ev.name }}">
                                 <input type="hidden" name="description" value="{{ ev.description }}">
-                                <button type="submit" class="resolve-btn">已解决</button>
+
+                                <textarea name="remarks" class="remarks-input" placeholder="在此记录维修过程..."></textarea>
+
+                                <button type="submit" class="resolve-btn">提交解决</button>
                             </form>
                             {% else %}
-                            <div class="resolved-tag">✓ 已解决</div>
                             {% endif %}
                         </div>
                     </div>

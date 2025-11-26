@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -131,7 +131,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # ===== 工单数据辅助函数 =====
-REQUIRED_COLUMNS = ['Timestamp', 'Description', 'Name', 'Phone', 'Category', 'department', 'Photos', '是否解决']
+REQUIRED_COLUMNS = ['Timestamp', 'Description', 'Name', 'Phone', 'Category', 'department', 'Photos', '是否解决', '维修备注']
 
 def ensure_excel_schema():
     """确保Excel存在并包含所需列，缺失列将补齐。"""
@@ -142,6 +142,8 @@ def ensure_excel_schema():
             if col not in df.columns:
                 if col == '是否解决':
                     df[col] = '待解决'
+                elif col == '维修备注':  # === 新增这行 ===
+                    df[col] = ''  # === 新增这行 ===
                 else:
                     df[col] = ''
                 changed = True
@@ -227,6 +229,17 @@ def login():
 
     return render_template('login.html')
 
+@app.route('/export_excel')
+@login_required
+def export_excel():
+    try:
+        # 导出文件，文件名包含当前日期，例如: baoxiu_20241126.xlsx
+        filename = f"baoxiu_{datetime.now().strftime('%Y%m%d')}.xlsx"
+        return send_file(excel_file_path, as_attachment=True, download_name=filename)
+    except Exception as e:
+        print(f"导出失败: {e}")
+        flash('导出文件失败，请检查服务器日志', 'danger')
+        return redirect(url_for('manage_fault_categories'))
 
 # 登出路由
 @app.route('/logout')
@@ -417,7 +430,33 @@ def send_email(category, description, name, phone, department, ai_advice, photos
 def index():
     categories = FaultCategory.query.all()
     recent_events = get_recent_events(10)
-    return render_template('index.html', categories=categories, recent_events=recent_events)
+
+    # === 新增：计算已解决工单总数 ===
+    base_count = 0  # 您的基础历史数据
+    resolved_count = base_count
+
+    try:
+        ensure_excel_schema()
+        # 读取Excel文件
+        df = pd.read_excel(excel_file_path, engine='openpyxl')
+
+        # 统计 '是否解决' 列中值为 '已解决' 的行数
+        if '是否解决' in df.columns:
+            # 过滤出已解决的工单
+            real_resolved = len(df[df['是否解决'] == '已解决'])
+            resolved_count = base_count + real_resolved
+
+    except Exception as e:
+        print(f"统计工单数量失败: {e}")
+        # 如果出错，至少显示基础数值
+        resolved_count = base_count
+    # ===============================
+
+    # 将 resolved_count 传递给模板
+    return render_template('index.html',
+                           categories=categories,
+                           recent_events=recent_events,
+                           resolved_count=resolved_count)
 
 
 @app.route('/success')
@@ -544,20 +583,20 @@ def edit_fault_category(category_id):
 @app.route('/resolve_ticket', methods=['POST'])
 @login_required
 def resolve_ticket():
-    """将Excel中匹配的事件标记为已解决。使用时间戳与姓名作为匹配键。"""
     ts = request.form.get('timestamp', '')
     name = request.form.get('name', '')
     description = request.form.get('description', '')
+    remarks = request.form.get('remarks', '')  # === 新增：获取备注 ===
+
     try:
         ensure_excel_schema()
         df = pd.read_excel(excel_file_path, engine='openpyxl')
-        if '是否解决' not in df.columns:
-            df['是否解决'] = '待解决'
         mask = (df.get('Timestamp').astype(str) == str(ts)) & (df.get('Name').astype(str) == str(name)) & (df.get('Description').astype(str) == str(description))
         if mask.any():
             df.loc[mask, '是否解决'] = '已解决'
+            df.loc[mask, '维修备注'] = remarks  # === 新增：保存备注 ===
             df.to_excel(excel_file_path, index=False)
-            flash('已标记为已解决', 'success')
+            flash('已标记为已解决并保存备注', 'success')
         else:
             flash('未找到对应的事件记录', 'warning')
     except Exception as e:

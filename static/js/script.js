@@ -139,38 +139,4 @@ document.addEventListener('DOMContentLoaded', function() {
     animateBackground();
     console.log('背景动画启动成功'); // 调试信息
 
-    // ==================== 已解决事件计数器功能 ====================
-    // 获取计数器元素
-    const resolvedCountEl = document.getElementById('resolvedCount');
-    // 获取提交按钮
-    const submitBtn = document.querySelector('.submit-btn');
-
-    // 初始化计数器数值（从localStorage读取，若无则使用默认值605）
-    if (resolvedCountEl) {
-        let resolvedCount = parseInt(localStorage.getItem('resolvedEvents')) || 605;
-        resolvedCountEl.textContent = resolvedCount;
-        console.log('计数器初始化成功，当前值：', resolvedCount);
-
-        // 为提交按钮添加点击事件监听器
-        if (submitBtn) {
-            submitBtn.addEventListener('click', function() {
-                // 数值累加
-                resolvedCount += 1;
-                // 更新本地存储
-                localStorage.setItem('resolvedEvents', resolvedCount);
-                // 更新显示并添加动画效果
-                resolvedCountEl.style.transform = 'scale(1.3)';
-                resolvedCountEl.textContent = resolvedCount;
-                // 恢复原大小
-                setTimeout(() => {
-                    resolvedCountEl.style.transform = 'scale(1)';
-                }, 300);
-                console.log('计数器已更新，当前值：', resolvedCount);
-            });
-        } else {
-            console.warn('未找到提交按钮，计数器累加功能无法启用');
-        }
-    } else {
-        console.warn('未找到计数器元素，计数器功能无法初始化');
-    }
 });
