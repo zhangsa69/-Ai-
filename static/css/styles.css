@@ -23,8 +23,8 @@ body {
     position: relative;
     z-index: 10;
     max-width: 1200px;
-    margin: 10px auto; /* 手机端间距缩小 */
-    padding: 20px;     /* 手机端内边距缩小 */
+    margin: 10px auto;
+    padding: 20px;
     background-color: rgba(0, 0, 0, 0.75);
     border-radius: 15px;
     box-shadow: 0 0 25px rgba(0, 150, 255, 0.4);
@@ -32,7 +32,7 @@ body {
 }
 
 /* ============================================================
-   2. 头部标题与已解决计数器
+   2. 头部标题与计数器
    ============================================================ */
 .title-bar {
     display: flex;
@@ -43,7 +43,7 @@ body {
 
 .title-bar h1 {
     color: #00b4ff;
-    font-size: 1.8rem; /* 默认字体缩小一点适配手机 */
+    font-size: 1.8rem;
     text-shadow: 0 0 15px rgba(0, 180, 255, 0.7);
     margin: 10px 0;
 }
@@ -60,8 +60,13 @@ body {
     font-size: 0.9rem;
 }
 
+.counter-number {
+    font-size: 1.4rem;
+    text-shadow: 0 0 8px rgba(46, 204, 113, 0.5);
+}
+
 /* ============================================================
-   3. 京车小智圆形按钮 (响应式)
+   3. 京车小智圆形大按钮 (精准对齐)
    ============================================================ */
 .ai-hero-section {
     display: flex;
@@ -71,14 +76,11 @@ body {
 }
 
 .ai-circle-btn {
-    width: 200px;  /* 手机端缩小到200px */
+    width: 200px;
     height: 200px;
     background: linear-gradient(135deg, #00b4ff, #0066ff);
     border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    position: relative;
     text-decoration: none;
     color: white;
     box-shadow: 0 0 30px rgba(0, 180, 255, 0.5);
@@ -87,11 +89,27 @@ body {
     animation: pulse-glow 3s infinite;
 }
 
-.ai-text-top { font-size: 0.9rem; opacity: 0.9; margin-bottom: 5px; }
+.ai-text-top {
+    position: absolute;
+    top: 28%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.9rem;
+    opacity: 0.9;
+    width: 100%;
+    text-align: center;
+}
+
 .ai-text-main {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     font-size: 1.3rem;
     font-weight: bold;
-    white-space: nowrap; /* 强制不换行 */
+    white-space: nowrap;
+    width: 100%;
+    text-align: center;
 }
 
 .form-divider {
@@ -113,11 +131,11 @@ body {
 }
 
 /* ============================================================
-   4. 报修表单 (关键修复：手机端自动堆叠)
+   4. 报修表单 (对称美感 + 手机适配)
    ============================================================ */
 form {
     display: grid;
-    grid-template-columns: 1fr; /* 手机端默认一列 */
+    grid-template-columns: 1fr;
     gap: 15px;
 }
 
@@ -130,15 +148,14 @@ label {
 }
 label.required::after { content: " *"; color: #ff4757; }
 
-/* 描述与上传行：手机端改为上下排列 */
 .desc-upload-row {
     display: grid;
-    grid-template-columns: 1fr; /* 手机端强制一列 */
+    grid-template-columns: 1fr;
     gap: 15px;
 }
 
 .desc-box textarea {
-    height: 150px; /* 手机端高度稍微减小 */
+    height: 150px;
     width: 100%;
     padding: 12px;
     background: rgba(255, 255, 255, 0.05);
@@ -151,7 +168,7 @@ label.required::after { content: " *"; color: #ff4757; }
 }
 
 .upload-box {
-    height: 150px; /* 保持与输入框一致 */
+    height: 150px;
     border: 2px dashed #00b4ff66;
     border-radius: 10px;
     display: flex;
@@ -162,10 +179,9 @@ label.required::after { content: " *"; color: #ff4757; }
     position: relative;
 }
 
-/* 修复加号按钮居中 */
 .upload-label {
     width: 50px; height: 50px;
-    background: #00b4ff;
+    background: linear-gradient(135deg, #00b4ff, #0066ff);
     border-radius: 10px;
     display: flex;
     align-items: center;
@@ -189,7 +205,6 @@ input, select {
     border-radius: 8px;
     color: white;
     box-sizing: border-box;
-    font-size: 1rem;
 }
 
 .submit-btn {
@@ -206,7 +221,50 @@ input, select {
 }
 
 /* ============================================================
-   5. 电脑端样式适配 (屏幕宽度大于 768px 时生效)
+   5. 最近工单面板 (彻底修复手机排版混乱)
+   ============================================================ */
+.events-panel { margin-top: 30px; }
+.events-panel h2 { color: #00b4ff; border-bottom: 1px solid #00b4ff33; padding-bottom: 10px; font-size: 1.4rem; }
+
+.event-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #00b4ff22;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;        /* 弹性布局 */
+    align-items: flex-start; /* 顶部对齐 */
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.event-info {
+    flex: 1;             /* 占满剩余宽度 */
+    min-width: 0;        /* 关键：允许内部文字正常换行，不撑破父容器 */
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.event-info div {
+    word-wrap: break-word; /* 确保长单词/长句子折行 */
+}
+
+.event-status {
+    flex-shrink: 0;      /* 关键：禁止状态标签被文字挤压缩小 */
+    white-space: nowrap; /* 关键：禁止状态标签换行 */
+    font-weight: bold;
+    font-size: 0.9rem;
+    padding-top: 2px;
+}
+
+.event-status.resolved { color: #2ecc71; }
+.event-status.pending { color: #ff4757; }
+
+/* ============================================================
+   6. 电脑端适配 (宽度 > 768px)
    ============================================================ */
 @media (min-width: 768px) {
     .container { margin: 20px auto; padding: 30px; }
@@ -216,7 +274,6 @@ input, select {
     .ai-text-top { font-size: 1.1rem; }
     .ai-text-main { font-size: 1.7rem; }
 
-    /* 电脑端恢复双列布局 */
     form { grid-template-columns: 1fr 1fr; gap: 20px; }
     .form-group.full-width { grid-column: span 2; }
     .desc-upload-row { grid-template-columns: 1fr 1fr; }
@@ -226,23 +283,8 @@ input, select {
     .submit-btn { width: 300px; margin: 20px auto; display: block; }
 }
 
-/* 动画 */
 @keyframes pulse-glow {
     0% { box-shadow: 0 0 15px rgba(0, 180, 255, 0.4); }
     50% { box-shadow: 0 0 35px rgba(0, 180, 255, 0.7); }
     100% { box-shadow: 0 0 15px rgba(0, 180, 255, 0.4); }
 }
-
-.events-panel { margin-top: 30px; }
-.event-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid #00b4ff22;
-    padding: 12px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.9rem;
-}
-.event-status.resolved { color: #2ecc71; }
-.event-status.pending { color: #ff4757; }
