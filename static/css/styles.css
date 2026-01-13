@@ -4,86 +4,75 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Microsoft YaHei', 'Arial', sans-serif;
+    font-family: 'Microsoft YaHei', -apple-system, sans-serif;
     color: #ffffff;
-    background-color: #0a0a1a; /* 深蓝色背景 */
+    background-color: #0a0a1a;
     overflow-x: hidden;
-    position: relative;
     min-height: 100vh;
 }
 
-/* 动态背景画布 */
 #canvas {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     z-index: -1;
     pointer-events: none;
 }
 
-/* 主容器 */
 .container {
     position: relative;
     z-index: 10;
     max-width: 1200px;
-    margin: 20px auto;
-    padding: 30px;
-    background-color: rgba(0, 0, 0, 0.7); /* 半透明黑 */
+    margin: 10px auto; /* 手机端间距缩小 */
+    padding: 20px;     /* 手机端内边距缩小 */
+    background-color: rgba(0, 0, 0, 0.75);
     border-radius: 15px;
     box-shadow: 0 0 25px rgba(0, 150, 255, 0.4);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px);
 }
 
 /* ============================================================
-   2. 头部标题与计数器
+   2. 头部标题与已解决计数器
    ============================================================ */
 .title-bar {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 30px;
-    text-align: center;
+    margin-bottom: 20px;
 }
 
 .title-bar h1 {
     color: #00b4ff;
-    font-size: 2.2rem;
+    font-size: 1.8rem; /* 默认字体缩小一点适配手机 */
     text-shadow: 0 0 15px rgba(0, 180, 255, 0.7);
-    margin: 0 0 15px 0;
+    margin: 10px 0;
 }
 
 .resolved-counter {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 18px;
-    background: linear-gradient(135deg, rgba(0, 180, 255, 0.1), rgba(0, 102, 255, 0.2));
+    gap: 6px;
+    padding: 6px 15px;
+    background: rgba(0, 180, 255, 0.15);
     border: 1px solid #00b4ff55;
     border-radius: 20px;
     color: #2ecc71;
-    font-weight: bold;
-}
-
-.counter-number {
-    font-size: 1.4rem;
-    text-shadow: 0 0 8px rgba(46, 204, 113, 0.5);
+    font-size: 0.9rem;
 }
 
 /* ============================================================
-   3. 京车小智圆形大按钮 (视觉重心)
+   3. 京车小智圆形按钮 (响应式)
    ============================================================ */
 .ai-hero-section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 40px 0;
+    margin: 30px 0;
 }
 
 .ai-circle-btn {
-    width: 260px;
-    height: 260px;
+    width: 200px;  /* 手机端缩小到200px */
+    height: 200px;
     background: linear-gradient(135deg, #00b4ff, #0066ff);
     border-radius: 50%;
     display: flex;
@@ -92,24 +81,23 @@ body {
     align-items: center;
     text-decoration: none;
     color: white;
-    box-shadow: 0 0 35px rgba(0, 180, 255, 0.5);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: 5px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 30px rgba(0, 180, 255, 0.5);
+    border: 4px solid rgba(255, 255, 255, 0.15);
+    transition: transform 0.3s ease;
     animation: pulse-glow 3s infinite;
 }
 
-.ai-circle-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 55px rgba(0, 180, 255, 0.8);
+.ai-text-top { font-size: 0.9rem; opacity: 0.9; margin-bottom: 5px; }
+.ai-text-main {
+    font-size: 1.3rem;
+    font-weight: bold;
+    white-space: nowrap; /* 强制不换行 */
 }
-
-.ai-text-top { font-size: 1.1rem; opacity: 0.9; margin-bottom: 5px; }
-.ai-text-main { font-size: 1.6rem; font-weight: bold; }
 
 .form-divider {
     width: 100%;
-    max-width: 500px;
-    margin: 40px 0 20px;
+    max-width: 400px;
+    margin: 30px 0 10px;
     border-bottom: 1px solid rgba(0, 180, 255, 0.2);
     position: relative;
     text-align: center;
@@ -119,43 +107,38 @@ body {
     position: relative;
     top: 10px;
     background: #0d0d21;
-    padding: 0 15px;
+    padding: 0 10px;
     color: #888;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 /* ============================================================
-   4. 报修表单样式 (修复对称性)
+   4. 报修表单 (关键修复：手机端自动堆叠)
    ============================================================ */
 form {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
-.form-group.full-width { grid-column: span 2; }
-
-/* 核心修复：对称的描述框与上传框 */
-.desc-upload-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-bottom: 10px;
+    grid-template-columns: 1fr; /* 手机端默认一列 */
+    gap: 15px;
 }
 
 label {
     display: block;
     color: #00b4ff;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
     font-weight: bold;
+    font-size: 0.95rem;
 }
 label.required::after { content: " *"; color: #ff4757; }
 
-/* 描述文本框 - 固定高度200px */
+/* 描述与上传行：手机端改为上下排列 */
+.desc-upload-row {
+    display: grid;
+    grid-template-columns: 1fr; /* 手机端强制一列 */
+    gap: 15px;
+}
+
 .desc-box textarea {
-    height: 200px;
-    min-height: 200px;
-    resize: none;
+    height: 150px; /* 手机端高度稍微减小 */
     width: 100%;
     padding: 12px;
     background: rgba(255, 255, 255, 0.05);
@@ -163,11 +146,12 @@ label.required::after { content: " *"; color: #ff4757; }
     border-radius: 8px;
     color: white;
     box-sizing: border-box;
+    font-size: 1rem;
+    resize: none;
 }
 
-/* 上传容器 - 固定高度200px */
 .upload-box {
-    height: 200px;
+    height: 150px; /* 保持与输入框一致 */
     border: 2px dashed #00b4ff66;
     border-radius: 10px;
     display: flex;
@@ -175,65 +159,42 @@ label.required::after { content: " *"; color: #ff4757; }
     align-items: center;
     justify-content: center;
     background: rgba(0, 180, 255, 0.03);
-    box-sizing: border-box;
     position: relative;
 }
 
-/* 修复加号按钮 - 绝对居中 */
+/* 修复加号按钮居中 */
 .upload-label {
-    width: 54px;
-    height: 54px;
-    background: linear-gradient(135deg, #00b4ff, #0066ff);
-    border-radius: 12px;
+    width: 50px; height: 50px;
+    background: #00b4ff;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    position: relative;
 }
 
-.plus {
-    position: relative;
-    width: 24px;
-    height: 24px;
-}
-
+.plus { position: relative; width: 20px; height: 20px; }
 .plus::before, .plus::after {
-    content: '';
-    position: absolute;
-    background-color: #ffffff;
-    border-radius: 2px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    content: ''; position: absolute; background: white;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
 }
-.plus::before { width: 20px; height: 3px; } /* 横线 */
-.plus::after { width: 3px; height: 20px; }  /* 竖线 */
+.plus::before { width: 16px; height: 3px; }
+.plus::after { width: 3px; height: 16px; }
 
-.preview-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 10px;
-    justify-content: center;
-}
-.preview-list img { width: 45px; height: 45px; object-fit: cover; border-radius: 4px; }
-
-/* 通用输入框 */
 input, select {
     width: 100%;
     padding: 12px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid #00b4ff44;
-    border-radius: 6px;
+    border-radius: 8px;
     color: white;
     box-sizing: border-box;
+    font-size: 1rem;
 }
 
-/* 提交按钮 */
-.button-container { grid-column: span 2; display: flex; justify-content: center; margin-top: 10px; }
 .submit-btn {
-    padding: 15px 60px;
+    width: 100%;
+    padding: 15px;
     background: #0066ff;
     border: none;
     border-radius: 8px;
@@ -241,43 +202,47 @@ input, select {
     font-weight: bold;
     font-size: 1.1rem;
     cursor: pointer;
-    transition: 0.3s;
+    margin-top: 10px;
 }
-.submit-btn:hover { background: #0055dd; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 102, 255, 0.4); }
 
 /* ============================================================
-   5. 其他辅助
+   5. 电脑端样式适配 (屏幕宽度大于 768px 时生效)
    ============================================================ */
-.ai-assistant-note {
-    grid-column: span 2;
-    text-align: center;
-    margin-top: 20px;
-    color: #888;
-    font-style: italic;
+@media (min-width: 768px) {
+    .container { margin: 20px auto; padding: 30px; }
+    .title-bar h1 { font-size: 2.2rem; }
+
+    .ai-circle-btn { width: 260px; height: 260px; }
+    .ai-text-top { font-size: 1.1rem; }
+    .ai-text-main { font-size: 1.7rem; }
+
+    /* 电脑端恢复双列布局 */
+    form { grid-template-columns: 1fr 1fr; gap: 20px; }
+    .form-group.full-width { grid-column: span 2; }
+    .desc-upload-row { grid-template-columns: 1fr 1fr; }
+
+    .desc-box textarea, .upload-box { height: 200px; }
+
+    .submit-btn { width: 300px; margin: 20px auto; display: block; }
 }
 
-.events-panel { margin-top: 40px; }
-.events-panel h2 { color: #00b4ff; border-bottom: 1px solid #00b4ff33; padding-bottom: 10px; }
+/* 动画 */
+@keyframes pulse-glow {
+    0% { box-shadow: 0 0 15px rgba(0, 180, 255, 0.4); }
+    50% { box-shadow: 0 0 35px rgba(0, 180, 255, 0.7); }
+    100% { box-shadow: 0 0 15px rgba(0, 180, 255, 0.4); }
+}
+
+.events-panel { margin-top: 30px; }
 .event-card {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid #00b4ff22;
-    padding: 15px;
+    padding: 12px;
     border-radius: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
+    font-size: 0.9rem;
 }
-.event-status.pending { color: #ff4757; }
 .event-status.resolved { color: #2ecc71; }
-
-@keyframes pulse-glow {
-    0% { box-shadow: 0 0 20px rgba(0, 180, 255, 0.4); }
-    50% { box-shadow: 0 0 45px rgba(0, 180, 255, 0.7); }
-    100% { box-shadow: 0 0 20px rgba(0, 180, 255, 0.4); }
-}
-
-@media (max-width: 768px) {
-    form, .desc-upload-row { grid-template-columns: 1fr; }
-    .ai-circle-btn { width: 220px; height: 220px; }
-    .button-container { grid-column: span 1; }
-}
+.event-status.pending { color: #ff4757; }

@@ -33,7 +33,93 @@ button {
 /* 修复IE中滚动条样式 */
 .container {
     scrollbar-base-color: #0a0a1a;
-    scrollbar-face-color: #00b4ff;
+    scrollbar-face-co/* 请将以下内容追加到 styles.css 的最末尾 */
+
+/* === 京车小智圆形大按钮样式 === */
+.ai-hero-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 40px 0;
+    text-align: center;
+}
+
+.ai-circle-btn {
+    width: 280px; /* 大圆形直径 */
+    height: 280px;
+    background: linear-gradient(135deg, #00b4ff, #0066ff);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+    box-shadow: 0 0 30px rgba(0, 180, 255, 0.4),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    animation: pulse-glow 3s infinite; /* 呼吸灯动画 */
+}
+
+.ai-circle-btn:hover {
+    transform: scale(1.08); /* 悬停放大 */
+    box-shadow: 0 0 50px rgba(0, 180, 255, 0.8);
+    background: linear-gradient(135deg, #00d2ff, #0078ff);
+}
+
+.ai-text-top {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 8px;
+}
+
+.ai-text-main {
+    font-size: 1.8rem;
+    font-weight: bold;
+    line-height: 1.2;
+    padding: 0 20px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* 引导分割线样式 */
+.form-divider {
+    width: 100%;
+    max-width: 600px;
+    margin: 40px 0 20px;
+    position: relative;
+    border-bottom: 1px solid rgba(0, 180, 255, 0.3);
+}
+
+.form-divider span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #0a0a1a; /* 遮盖线条的背景色 */
+    padding: 0 15px;
+    color: #888;
+    font-size: 0.9rem;
+}
+
+/* 蓝色呼吸灯效果动画 */
+@keyframes pulse-glow {
+    0% { box-shadow: 0 0 20px rgba(0, 180, 255, 0.4); }
+    50% { box-shadow: 0 0 45px rgba(0, 180, 255, 0.7); }
+    100% { box-shadow: 0 0 20px rgba(0, 180, 255, 0.4); }
+}
+
+/* 移动端响应式调整 */
+@media (max-width: 768px) {
+    .ai-circle-btn {
+        width: 220px;
+        height: 220px;
+    }
+    .ai-text-top { font-size: 1rem; }
+    .ai-text-main { font-size: 1.4rem; }
+    .ai-hero-section { margin: 25px 0; }
+}lor: #00b4ff;
     scrollbar-track-color: #0a0a1a;
     scrollbar-arrow-color: #00b4ff;
     scrollbar-3dlight-color: #0a0a1a;
