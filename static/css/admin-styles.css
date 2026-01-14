@@ -1,0 +1,297 @@
+/* ============================================================
+   static/css/admin-styles.css
+   后台管理系统专用样式表
+   ============================================================ */
+
+/* 1. 基础全局样式 (保持与前台风格一致的深色背景) */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Microsoft YaHei', -apple-system, sans-serif;
+    color: #ffffff;
+    background-color: #0a0a1a;
+    overflow-x: hidden; /* 防止横向滚动条 */
+    min-height: 100vh;
+}
+
+/* 背景星空画布定位 */
+#canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* 链接基础样式 */
+a { text-decoration: none; color: inherit; }
+
+/* 2. 通用组件样式 */
+
+/* 页面标题 */
+.page-header {
+    text-align: center;
+    padding: 20px 0;
+    margin-bottom: 10px;
+}
+
+.page-header h1 {
+    color: #00b4ff;
+    font-size: 2.2rem;
+    margin: 0 0 15px 0;
+    text-shadow: 0 0 15px rgba(0, 180, 255, 0.6);
+}
+
+/* Flash 消息提示 */
+.flash-message {
+    padding: 10px 20px;
+    margin: 10px auto;
+    max-width: 600px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+.flash-message.success { background-color: rgba(46, 204, 113, 0.2); border: 1px solid #2ecc71; color: #2ecc71; }
+.flash-message.danger { background-color: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; color: #e74c3c; }
+.flash-message.warning { background-color: rgba(241, 196, 15, 0.2); border: 1px solid #f1c40f; color: #f1c40f; }
+
+/* 3. 三栏布局系统 (核心布局) */
+.triple-container-layout {
+    display: flex;
+    gap: 20px;
+    max-width: 1800px; /* 宽屏适配 */
+    margin: 0 auto;
+    padding: 0 20px 20px;
+    height: calc(100vh - 140px); /* 减去头部高度，铺满屏幕 */
+    box-sizing: border-box;
+}
+
+/* 三个主要容器的公共样式 */
+.container-left, .container-middle, .container-right {
+    background-color: rgba(10, 10, 26, 0.7); /* 深色半透明背景 */
+    border-radius: 12px;
+    border: 1px solid rgba(0, 180, 255, 0.2);
+    padding: 20px;
+    overflow-y: auto; /* 内容溢出时显示滚动条 */
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+/* 容器标题 */
+h2, h3 {
+    color: #00b4ff;
+    margin-top: 0;
+    border-bottom: 1px solid rgba(0, 180, 255, 0.2);
+    padding-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+/* 左侧：最近工单 (25%) */
+.container-left { flex: 2.5; }
+
+/* 中间：故障类别管理 (50%) */
+.container-middle { flex: 5; }
+
+/* 右侧：运维工具 (25%) */
+.container-right { flex: 2.5; }
+
+
+/* 4. 左侧内容：工单列表样式 */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(0, 180, 255, 0.2);
+    padding-bottom: 10px;
+}
+.section-header h2 { border: none; margin: 0; padding: 0; }
+
+.export-btn {
+    background: rgba(0, 180, 255, 0.15);
+    color: #00b4ff;
+    border: 1px solid #00b4ff;
+    padding: 5px 12px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+.export-btn:hover { background: #00b4ff; color: white; }
+
+.event-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+.event-line {
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+    display: flex;
+}
+.event-line .label { color: #888; width: 40px; flex-shrink: 0; }
+.event-line .value { color: #eee; word-break: break-all; }
+
+.event-status {
+    text-align: right;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-top: 5px;
+}
+.event-status.resolved { color: #2ecc71; }
+.event-status.pending { color: #ff4757; }
+
+/* 快速解决表单 */
+.resolve-form { margin-top: 10px; border-top: 1px dashed rgba(255, 255, 255, 0.1); padding-top: 8px; }
+.remarks-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid #444;
+    color: #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    margin-bottom: 5px;
+    resize: vertical;
+    min-height: 40px;
+    box-sizing: border-box;
+}
+.resolve-btn {
+    width: 100%;
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+.resolve-btn:hover { background-color: #2ecc71; }
+
+
+/* 5. 中间内容：表格与表单 */
+.add-form {
+    background: rgba(0, 180, 255, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.form-group { margin-bottom: 10px; }
+label { display: block; margin-bottom: 5px; color: #aaa; font-size: 0.9rem; }
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 8px 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: white;
+    box-sizing: border-box;
+}
+input:focus { border-color: #00b4ff; outline: none; }
+
+.submit-btn {
+    background: #0066ff;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.submit-btn:hover { background: #0056d6; }
+
+/* 表格样式 */
+.fault-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+.fault-table th {
+    text-align: left;
+    padding: 12px 10px;
+    background-color: rgba(0, 180, 255, 0.1);
+    color: #00b4ff;
+    border-bottom: 1px solid rgba(0, 180, 255, 0.3);
+}
+.fault-table td {
+    padding: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.fault-table tr:hover { background-color: rgba(255, 255, 255, 0.02); }
+
+/* 表格内按钮 */
+.inline-form { display: inline-block; margin-right: 5px; }
+.edit-btn, .delete-btn {
+    padding: 4px 10px;
+    border: none;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: opacity 0.2s;
+}
+.edit-btn { background-color: #f39c12; }
+.delete-btn { background-color: #e74c3c; }
+.edit-btn:hover, .delete-btn:hover { opacity: 0.8; }
+
+
+/* 6. 右侧内容：工具网格 */
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 15px;
+}
+.tool-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 15px 5px;
+    transition: all 0.3s;
+}
+.tool-item:hover {
+    background: rgba(0, 180, 255, 0.1);
+    border-color: #00b4ff;
+    transform: translateY(-2px);
+}
+.tool-icon { font-size: 1.8rem; margin-bottom: 8px; }
+.tool-name { font-size: 0.85rem; text-align: center; color: #ccc; }
+
+
+/* 7. 编辑页面专用容器 (edit_fault_category.html) */
+.container-edit {
+    max-width: 600px;
+    margin: 40px auto;
+    background-color: rgba(10, 10, 26, 0.8);
+    border: 1px solid rgba(0, 180, 255, 0.3);
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 0 30px rgba(0, 150, 255, 0.15);
+}
+.back-btn {
+    display: inline-block;
+    margin-top: 15px;
+    color: #888;
+    font-size: 0.9rem;
+}
+.back-btn:hover { color: #fff; }
+
+/* 8. 响应式适配 (移动端或窄屏) */
+@media (max-width: 1024px) {
+    .triple-container-layout {
+        flex-direction: column;
+        height: auto;
+    }
+    .container-left, .container-middle, .container-right {
+        flex: none;
+        width: 100%;
+        margin-bottom: 20px;
+        height: auto;
+        min-height: 300px;
+    }
+}

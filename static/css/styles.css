@@ -39,7 +39,112 @@ body {
 .resolved-counter { display: inline-flex; align-items: center; gap: 6px; padding: 6px 15px; background: rgba(0, 180, 255, 0.15); border: 1px solid #00b4ff55; border-radius: 20px; color: #2ecc71; font-size: 0.9rem; }
 
 .ai-hero-section { display: flex; flex-direction: column; align-items: center; margin: 30px 0; }
-.ai-circle-btn { width: 200px; height: 200px; background: linear-gradient(135deg, #00b4ff, #0066ff); border-radius: 50%; position: relative; text-decoration: none; color: white; box-shadow: 0 0 30px rgba(0, 180, 255, 0.5); border: 4px solid rgba(255, 255, 255, 0.15); animation: pulse-glow 3s infinite; }
+.ai-circle-btn {
+    position: relative; /* 必须设置，为了给伪元素定位 */
+    z-index: 2; /* 确保按钮文字和本体在最上层 */
+    width: 160px;  /* 稍微加大了一点尺寸 */
+    height: 160px;
+    border-radius: 50%;
+    /* 核心渐变背景：营造内部能量涌动感 */
+    background: radial-gradient(circle at center, #00eaff 0%, #0078ff 70%, #0044cc 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+    /* 强烈的初始光晕 */
+    box-shadow: 0 0 40px rgba(0, 180, 255, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(135, 231, 255, 0.6);
+    /* 核心自身的轻微脉冲动画 */
+    animation: core-pulse 2s ease-in-out infinite alternate;
+    transition: all 0.3s ease;
+}
+
+/* 鼠标悬停时的强化效果 */
+.ai-circle-btn:hover {
+    transform: scale(1.05); /* 轻微放大 */
+    box-shadow: 0 0 60px rgba(0, 220, 255, 1), inset 0 0 30px rgba(255, 255, 255, 0.6);
+    background: radial-gradient(circle at center, #54f4ff 0%, #0096ff 70%, #0055e6 100%);
+}
+
+/* 2. 扩散能量波纹 (利用伪元素实现背景律动) */
+
+/* 创建两个伪元素层，放在按钮后面 */
+.ai-circle-btn::before,
+.ai-circle-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* 居中定位 */
+    width: 100%;
+    height: 100%; /* 初始大小与按钮相同 */
+    border-radius: 50%;
+    background: transparent;
+    z-index: -1; /* 放在按钮背后 */
+    pointer-events: none; /* 不影响鼠标点击 */
+}
+
+/* 第一层波纹 (较快，颜色较亮) */
+.ai-circle-btn::before {
+    border: 4px solid rgba(0, 220, 255, 0.7);
+    /* 应用扩散动画：时长3秒，无限循环，线性速度 */
+    animation: ripple-wave 3s linear infinite;
+}
+
+/* 第二层波纹 (较慢，延迟出发，营造层次感) */
+.ai-circle-btn::after {
+    border: 3px solid rgba(0, 140, 255, 0.5);
+    /* 延迟 1.5秒开始，错峰扩散 */
+    animation: ripple-wave 3s linear 1.5s infinite;
+}
+
+
+/* ============================================================
+   新增动画关键帧定义 (请确保这些代码在 CSS 文件底部)
+   ============================================================ */
+
+/* 动画 1：能量核心的自身脉冲 (轻微缩放和光晕变化) */
+@keyframes core-pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 30px rgba(0, 180, 255, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+    100% {
+        transform: scale(1.03);
+        box-shadow: 0 0 50px rgba(0, 200, 255, 0.9), inset 0 0 25px rgba(255, 255, 255, 0.5);
+    }
+}
+
+/* 动画 2：扩散波纹动画 (从中心向外扩散变大并消失) */
+@keyframes ripple-wave {
+    0% {
+        width: 100%;  /* 初始状态：紧贴按钮 */
+        height: 100%;
+        opacity: 0.8; /* 不透明 */
+        border-width: 4px;
+    }
+    100% {
+        width: 240%;  /* 结束状态：扩散到 2.4 倍大 (范围更大显眼) */
+        height: 240%;
+        opacity: 0;   /* 完全透明消失 */
+        border-width: 1px; /* 边框变细 */
+    }
+}
+
+/* 现有的图标和文字样式保持不变即可 */
+.ai-icon-large {
+    font-size: 3rem;
+    margin-bottom: 5px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.ai-btn-text {
+    font-size: 1.1rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
 .ai-text-top { position: absolute; top: 28%; left: 50%; transform: translateX(-50%); font-size: 0.9rem; opacity: 0.9; width: 100%; text-align: center; }
 .ai-text-main { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.3rem; font-weight: bold; white-space: nowrap; width: 100%; text-align: center; }
 
@@ -147,6 +252,10 @@ input, select { width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.05
     .desc-upload-row { grid-template-columns: 1fr 1fr; }
     .desc-box textarea, .upload-box { height: 200px; }
     .preview-list img { width: 65px !important; height: 65px !important; }
+    .button-container {
+        grid-column: span 2; /* 强制占满整行（跨两列） */
+        text-align: center;   /* 确保内部内容居中 */
+    }
     .submit-btn { width: 300px; margin: 20px auto; display: block; }
 }
 
