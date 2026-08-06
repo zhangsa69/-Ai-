@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# Environment & secrets
+.env
+.env.*
+*.pem
+*.key
+
+# Database & data
+*.db
+backend/data/
+backend/uploads/
+uploads/
+
+# Logs
+*.log
+server*.log
+
+# Node
+node_modules/
+admin-frontend/node_modules/
+admin-frontend/dist/
+
+# Editor
+.vscode/
+.idea/
+.DS_Store
+
+# Backups
+*.bak
+*.bak_*
+
+# Internal docs
+plan.md
+功能介绍.md
+PROJECT_REF.md
+
+# Media (large)
+*.gif
+*.mp4
